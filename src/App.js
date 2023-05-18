@@ -24,14 +24,14 @@ export default function App() {
     setGuests(guests.filter((_, i) => i !== index));
   };
 
-  const toggleAttending = (index) => {
+  const updateGuestStatus = (index, status) => {
     const updatedGuests = [...guests];
     const guest = updatedGuests[index];
-    guest.status = guest.status === 'attending' ? 'not attending' : 'attending';
+    guest.status = status;
     setGuests(updatedGuests);
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       addGuest();
     }
@@ -43,7 +43,7 @@ export default function App() {
 
       <div>
         {guests.map((guest, index) => (
-          <div key={index} data-test-id="guest">
+          <div key={`guest-${guest.id}`} data-test-id="guest">
             <div>
               {guest.firstName} {guest.lastName}
             </div>
@@ -52,7 +52,14 @@ export default function App() {
               <input
                 type="checkbox"
                 checked={guest.status === 'attending'}
-                onChange={() => toggleAttending(index)}
+                onChange={() =>
+                  updateGuestStatus(
+                    index,
+                    guest.status === 'attending'
+                      ? 'not attending'
+                      : 'attending',
+                  )
+                }
                 aria-label={`${guest.firstName} ${guest.lastName} attending status`}
               />
             </label>
@@ -76,7 +83,7 @@ export default function App() {
           <input
             value={newGuestLastName}
             onChange={(e) => setNewGuestLastName(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
           />
         </label>
       </div>
